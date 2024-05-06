@@ -1,23 +1,53 @@
-export default function resolvers(componentName: string) {
-  console.log(componentName)
-  // if (componentName.substring(0, 1).toLowerCase() !== "w") {
-  //   return;
-  // }
-  if (componentName.toLowerCase() !== 'fixedsizelist') {
-    return
-  }
-  const map = new Map([
-    ['FixedSizeList', 'virtual-scroll-list-liudingkang/es/packages/fixed-size-list']
-  ])
-  //下划线风格转为驼峰
-  const name = componentName.replace(/-(\w)/g, (m, m1) => m1.toUpperCase())
-  if (map.has(name)) {
-    const from = map.get(name)
-    if (from)
-      return {
-        from,
-        name: 'default' /*components/button.vue默认以default方式导出*/
+export interface LdkResolverOptions {
+  /**
+   * import components css
+   *
+   * @default true
+   */
+  importStyle?: boolean;
+
+  /**
+   * use lib
+   *
+   * @default false
+   */
+  cjs?: boolean;
+}
+
+/**
+ * Button->button; ButtonGroup->button-group
+ */
+function kebabCase(key: string) {
+  const result = key.replace(/([A-Z])/g, ' $1').trim();
+  return result.split(' ').join('-').toLowerCase();
+}
+function getModuleType(cjs: boolean): string {
+  return cjs ? 'lib' : 'es';
+}
+function getSideEffects(dirName: string, options: LdkResolverOptions) {
+  const { importStyle = true, cjs = false } = options;
+  const moduleType = getModuleType(cjs);
+
+  if (!importStyle) return;
+  return `virtual-scroll-list-liudingkang/${moduleType}/${dirName}/style/index`;
+}
+
+export function LdkResolver(options: LdkResolverOptions = {}) {
+  const { cjs = false } = options;
+
+  const moduleType = getModuleType(cjs);
+
+  return {
+    type: 'component' as const,
+    resolve: (name: string) => {
+      if (name.startsWith('Ldk')) {
+        const partialName = name.slice(3);
+        return {
+          name: partialName,
+          from: `virtual-scroll-list-liudingkang/${moduleType}`,
+          sideEffects: getSideEffects(kebabCase(partialName), options),
+        };
       }
-  }
-  return
+    },
+  };
 }
