@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    FixedSizeList: typeof import('virtual-scroll-list-liudingkang/es/packages/fixed-size-list')['default']
+    LdkDynamicList: typeof import('virtual-scroll-list-liudingkang/es')['DynamicList']
+    LdkFixedSizeList: typeof import('virtual-scroll-list-liudingkang/es')['FixedSizeList']
   }
 }

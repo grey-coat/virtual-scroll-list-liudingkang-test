@@ -15,7 +15,7 @@
   "dependencies": {
     "@varlet/ui": "^3.2.7",
     "vant": "^4.9.0",
-    "virtual-scroll-list-liudingkang": "^6.1.6",
+    "virtual-scroll-list-liudingkang": "^6.2.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
